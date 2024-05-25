@@ -1,0 +1,13 @@
+{
+	"folders": [
+		{
+			"path": "."
+		},
+		{
+			"path": "../blackjack-game "
+		}
+	],
+	"settings": {
+		"liveServer.settings.multiRootWorkspaceName": "blackjack_web"
+	}
+}
