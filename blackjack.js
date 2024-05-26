@@ -75,13 +75,7 @@ function doubleDown() {
     }
     playerCards.innerHTML = playerCardsHTML;
     playerTotal.innerHTML = formatHandTotal(getHandTotal(playerHand), "Player");
-    let betDisplayHTML = ''
-        let betCount = betAmount
-        while (betCount > 0) {
-            betCount -= 5;
-            betDisplayHTML += `<img src="poker_chip.jpeg" alt="Bet" class="bet-image">`;
-        }
-        betDisplay.innerHTML = betDisplayHTML;
+    betDisplay.innerHTML = convertBetToChips(betAmount);
     stand();
 }
 
@@ -90,22 +84,12 @@ function canGetInsurance() {
 }
 
 function insurance() {
-    if (canGetInsurance()) {
-        console.log("Getting insurance");
-        insuranceBet = parseFloat(0.5 * betAmount);
-        bank -= insuranceBet
-        updateBank();
-        let insuranceBetDisplayHTML = ''
-        let betCount = insuranceBet
-        while (betCount > 0) {
-            betCount -= 5;
-            insuranceBetDisplayHTML += `<img src="poker_chip.jpeg" alt="Bet" class="bet-image">`;
-        }
-        insuranceBetDisplay.innerHTML = insuranceBetDisplayHTML;
-        generateButtons();
-    } else {
-        console.log("Can only insure at the start of your turn when dealer shows an Ace");
-    }
+    console.log("Getting insurance");
+    insuranceBet = parseFloat(0.5 * betAmount);
+    bank -= insuranceBet
+    updateBank();
+    insuranceBetDisplay.innerHTML = convertBetToChips(insuranceBet);
+    generateButtons();
 }
 
 let bank = 1000;
@@ -217,6 +201,27 @@ function formatHandTotal(total, owner) {
     }
 }
 
+function convertBetToChips(betAmount) {
+    let betCounterHTML = '';
+    let betCount = betAmount
+        while (betCount > 0) {
+            if (betCount >= 100) {
+                betCount -= 100;
+                betCounterHTML += `<img src="poker_chips/black.png" alt="Bet" class="bet-image">`;
+            } else if (betCount >= 25) {
+                betCount -= 25;
+                betCounterHTML += `<img src="poker_chips/green.png" alt="Bet" class="bet-image">`;
+            } else if (betCount >= 10) {
+                betCount -= 10;
+                betCounterHTML += `<img src="poker_chips/red.png" alt="Bet" class="bet-image">`;
+            } else if (betCount >= 5) {
+                betCount -= 5;
+                betCounterHTML += `<img src="poker_chips/blue.png" alt="Bet" class="bet-image">`;
+            }
+        }
+    return betCounterHTML;
+}
+
 function updateBank() {
     document.querySelector('.bank p').innerHTML = `Bank: ${bank}`;
 }
@@ -237,6 +242,7 @@ function reset() {
     insuranceBet = 0;
     betAmount = 0;
     betCounter.innerHTML = '';
+    betAmountDisplay.innerHTML = '';
 
     const buttonContainer = document.querySelector('.button-container');
     buttonContainer.innerHTML = '';
@@ -263,8 +269,10 @@ function checkBetsOn() {
     }
 }
 
-const betForm = document.getElementById('betForm');
-const betCounter = betForm.querySelector('p');
+const betForm = document.querySelector('.bet-form')
+const betFormAmount = document.getElementById('betForm');
+const betCounter = betForm.querySelector('h2');
+const betAmountDisplay = betFormAmount.querySelector('p');
 
 // Select all the bet buttons
 const betButtons = document.querySelectorAll('.bet-button');
@@ -275,15 +283,11 @@ betButtons.forEach(button => {
         // Get the value of the button and add it to the current bet amount
         const amountToAdd = parseInt(button.value);
         betAmount += amountToAdd;
+        betCounter.innerHTML = convertBetToChips(betAmount);
         
         // Update the bet display with the new bet amount
         let betCounterHTML = `Bet Amount: ${betAmount}<br>`;
-        let betCount = betAmount
-        while (betCount > 0) {
-            betCount -= 5;
-            betCounterHTML += `<img src="poker_chip.jpeg" alt="Bet" class="bet-image">`;
-        }
-        betCounter.innerHTML = betCounterHTML;
+        betAmountDisplay.innerHTML = betCounterHTML;
     });
 });
 
@@ -291,14 +295,9 @@ function bet() {
     console.log("Bet Amount:", betAmount);
 
     betDisplay.innerHTML = `Bet: ${betAmount}`;
-
-    let betDisplayHTML = ''
-        let betCount = betAmount
-        while (betCount > 0) {
-            betCount -= 5;
-            betDisplayHTML += `<img src="poker_chip.jpeg" alt="Bet" class="bet-image">`;
-        }
-        betDisplay.innerHTML = betDisplayHTML;
+    
+    
+    betDisplay.innerHTML = convertBetToChips(betAmount);
 
     bank -= betAmount;
     updateBank();
