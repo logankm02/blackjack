@@ -58,9 +58,8 @@ function split() {
 }
 
 function canDoubleDown() {
-    if (hasHit || playerHand.length !== 2) return false;
+    if (hasHit || turnOver || playerHand.length !== 2) return false;
     if (getFinalTotal(playerHand) === 21) return false;
-    if (hasHit) return false;
     let totalsAllowed = [9, 10, 11];
     let total = getHandTotal(playerHand);
     return Array.isArray(total) ? totalsAllowed.includes(total[0]) || totalsAllowed.includes(total[1]) : totalsAllowed.includes(total);
@@ -94,6 +93,8 @@ function insurance() {
     if (canGetInsurance()) {
         console.log("Getting insurance");
         insuranceBet = parseFloat(0.5 * betAmount);
+        bank -= insuranceBet
+        updateBank();
         let insuranceBetDisplayHTML = ''
         let betCount = insuranceBet
         while (betCount > 0) {
@@ -240,7 +241,7 @@ function reset() {
     const buttonContainer = document.querySelector('.button-container');
     buttonContainer.innerHTML = '';
 
-    const betForm = document.getElementById('betForm');
+    const betForm = document.querySelector('.bet-form');
     betForm.classList.remove('hidden');
 
     checkBetsOn();
@@ -298,9 +299,12 @@ function bet() {
             betDisplayHTML += `<img src="poker_chip.jpeg" alt="Bet" class="bet-image">`;
         }
         betDisplay.innerHTML = betDisplayHTML;
+
+    bank -= betAmount;
+    updateBank();
     
     // Hide the form after the bet is made
-    const betForm = document.getElementById('betForm');
+    const betForm = document.querySelector('.bet-form');
     betForm.classList.add('hidden');
     dealCards();
     generateButtons();
@@ -325,7 +329,19 @@ function dealCards() {
     if (getFinalTotal(playerHand) === 21) {
         console.log("Player Wins!");
         result.innerHTML = "Blackjack! Player Wins!";
-        bank += betAmount * 1.5;
+        betDisplay.innerHTML
+        bank += betAmount * 2.5;
+
+        // Get the current HTML content of betDisplay
+        let originalHTML = betDisplay.innerHTML;
+
+        // Append the HTML content of betDisplay to itself
+        betDisplay.innerHTML += originalHTML;
+
+        // Append half of the original HTML content
+        let halfLength = Math.floor(originalHTML.length / 2);
+        betDisplay.innerHTML += originalHTML.substring(0, halfLength);
+
         updateBank();
         stand();
     }
@@ -345,7 +361,7 @@ function hit() {
         console.log("Player Busted!");
         playerBusted = true;
         result.innerHTML = "Busted! Dealer Wins!";
-        bank -= betAmount;
+        betDisplay.innerHTML = '';
         updateBank();
         stand();
     }
@@ -361,19 +377,20 @@ function stand() {
     if (finalTotal === 21) {
         console.log("Dealer Wins!");
         result.innerHTML = "Blackjack! Dealer Wins!";
-        bank -= betAmount;
         if (insuranceBet > 0) {
-            bank += insuranceBet;
+            insuranceBetDisplay.innerHTML += insuranceBetDisplay.innerHTML;
+            bank += 2*insuranceBet;
             console.log("Got insurance!");
         }
         updateBank();
         return -1;
     } else {
-        bank -= insuranceBet;
+        insuranceBetDisplay.innerHTML = '';
     }
 
     while (true) {
         finalTotal = getFinalTotal(dealerHand);
+        console.log(dealerHand);
         if (finalTotal >= 17) break;
 
         let newCard = deck.pop();
@@ -382,7 +399,6 @@ function stand() {
         for (let i = 0; i < dealerHand.length; i++) {
             dealerCardsHTML += `<img src="${dealerHand[i][2]}" alt="Card" class="card-image">`;
         }
-        dealerCardsHTML = dealerCardsHTML.slice(0, -2);
         dealerCards.innerHTML = dealerCardsHTML;
         dealerTotal.innerHTML = formatHandTotal(getHandTotal(dealerHand), "Dealer");
     }
@@ -400,7 +416,7 @@ function determineWinner() {
     if (playerTotalValue > 21) {
         console.log("Player Busted!");
         result.innerHTML = "Player Busted! Dealer Wins!";
-        bank -= betAmount;
+        betDisplay.innerHTML = '';
         updateBank();
         return -1;
     } else if (dealerTotalValue > 21) {
@@ -408,25 +424,29 @@ function determineWinner() {
         result.innerHTML = "Dealer Busted!";
         if (!playerBusted) {
             result.innerHTML = "Dealer Busted! Player Wins!";
-            bank += betAmount;
+            betDisplay.innerHTML += betDisplay.innerHTML;
+            bank += 2*betAmount;
             updateBank();
         }
         return 1;
     } else if (playerTotalValue > dealerTotalValue) {
         console.log("Player Wins!");
         result.innerHTML = "Player Wins!";
-        bank += betAmount;
+        bank += 2*betAmount;
+        betDisplay.innerHTML += betDisplay.innerHTML;
         updateBank();
         return 1;
     } else if (playerTotalValue < dealerTotalValue) {
         console.log("Dealer Wins!");
         result.innerHTML = "Dealer Wins!";
-        bank -= betAmount;
+        betDisplay.innerHTML = '';
         updateBank();
         return -1;
     } else {
         console.log("Push!");
+        bank += betAmount;
         result.innerHTML = "Push!";
+        updateBank();
         return 0;
     }
 }
