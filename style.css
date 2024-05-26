@@ -1,4 +1,11 @@
+body {
+    background-image: url("background.jpg");
+    background-size: cover;
+    background-repeat: none;
+}
+
 html, body {
+    font-family: "Radio Canada Big", sans-serif;
     margin: 0;
     display: flex;
     flex-direction: column;
@@ -14,7 +21,100 @@ main {
     justify-content: center;
 }
 
+.player {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr; /* Three columns: auto for left space, 1fr for cards in the middle, and auto for right space */
+    align-items: center;
+    width: 100vw;
+}
+
+.dealer {
+    display: grid;
+    grid-template-columns: 0.9fr 1.2fr 0.9fr; /* Three columns: auto for left space, 1fr for cards in the middle, and auto for right space */
+    align-items: center;
+    width: 100vw;
+}
+
+.player-cards, .dealer-cards {
+    grid-column: 2; /* Cards span the middle column */
+}
+
+.player-total {
+    justify-self: start; /* Align player total to the end (right) of its column */
+    margin-left: 10px; /* Add some space */
+}
+
+.dealer-total {
+    justify-self: end; /* Align dealer total to the start (left) of its column */
+    margin-right: 10px; /* Add some space */
+}
+
+
+.button-container {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: max-content;
+}
+.button-container button {
+    margin: 10px;
+    border-radius: 10px;
+    border: none;
+    padding: 5px;
+    width: 80px;
+}
+
+.bet {
+    display: grid;
+    grid-template-columns: 1.15fr 0.7fr 1.15fr;
+    align-items: center;
+    width: 100vw;
+}
+
+.bet p {
+    grid-column: 2;
+}
+
+.insurance-bet {
+    justify-self: start;
+}
+
+.bet-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.bet-button {
+    margin: 10px;
+    border-radius: 50%;
+    border: none;
+    padding: 5px;
+    width: 40px;
+    height: 40px;
+    justify-self: center;
+}
+
+.bet-button-submit {
+    margin: 10px;
+    border-radius: 20%;
+    border: none;
+    padding: 5px;
+    width: 60px;
+    height: 40px;
+    justify-self: center;
+}
+
 .card-image {
     height: 120px;
-    margin: 10px;
+    margin: 10px -15px;
 }
+
+.bet-image {
+    height: 50px;
+    margin: 0px -15px;
+}
+
+.hidden {
+    display: none;
+        }

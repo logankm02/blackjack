@@ -3,6 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Radio+Canada+Big:ital,wght@0,400..700;1,400..700&display=swap"
+        rel="stylesheet">
     <title>Blackjack</title>
     <link rel="icon" href="r.png" type="image/png">
     <link rel="stylesheet" href="style.css">
@@ -10,24 +14,47 @@
 <body>
     <main>
         <h1>Blackjack</h1>
-        <div class="dealer-cards">
+        <div class="bank">
             <p></p>
         </div>
-        <div class="dealer-total">
-            <p></p>
+        <p>Add Amount to Bet</p>
+        <div class="bet-form">
+            <form id="betForm">
+                <button class="bet-button" value="5" type="button">5</button>
+                <button class="bet-button" value="10" type="button">10</button>
+                <button class="bet-button" value="20" type="button">20</button>
+                <button class="bet-button" value="50" type="button">50</button>
+                <button class="bet-button" value="100" type="button">100</button>
+                <p></p>
+                <button class="bet-button-submit" type="submit" onClick="bet()">Play!</button>
+            </form>
         </div>
-        <div class="player-cards">
-            <h1>Your Cards</h1>
-            <p></p>
+        <div class="dealer">
+            <div class="dealer-total">
+                <p></p>
+            </div>
+            <div class="dealer-cards">
+                <p></p>
+            </div>
         </div>
-        <div class="player-total">
+        <div class="bet">
             <p></p>
+            <div class="insurance-bet">
+                <p></p>
+            </div>
+        </div>
+        <div class="player">
+            <div class="player-cards">
+                <p></p>
+            </div>
+            <div class="player-total">
+                <p></p>
+            </div>
         </div>
         <div class="result">
             <p></p>
         </div>
         <div class="buttons"></div>
-        <script src="blackjack.js"></script>
     </main>
     <script src="blackjack.js"></script>
 </body>
