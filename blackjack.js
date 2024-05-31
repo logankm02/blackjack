@@ -367,12 +367,26 @@ function hit() {
     generateButtons();
 }
 
-function stand() {
+async function displayDealerCards() {
+    let dealerCardsHTML = `<img src="${dealerHand[0][2]}" alt="Card" class="card-image">`;
+    dealerCards.innerHTML = dealerCardsHTML;
+
+    for (let i = 1; i < dealerHand.length; i++) {
+        await new Promise(resolve => setTimeout(resolve, 500)); // 1 second delay
+        dealerCardsHTML += `<img src="${dealerHand[i][2]}" alt="Card" class="card-image">`;
+        dealerCards.innerHTML = dealerCardsHTML;
+    }
+    dealerTotal.innerHTML = formatHandTotal(getHandTotal(dealerHand), "Dealer");
+}
+
+async function stand() {
     turnOver = true;
     generateButtons();
+    dealerCards.innerHTML = `<img src="${dealerHand[0][2]}" alt="Card" class="card-image">`;
+
+    await displayDealerCards();
+
     let finalTotal = getFinalTotal(dealerHand);
-    dealerCards.innerHTML = `<img src="${dealerHand[0][2]}" alt="Card" class="card-image"><img src="${dealerHand[1][2]}" alt="Card" class="card-image">`;
-    dealerTotal.innerHTML = formatHandTotal(finalTotal, "Dealer");
     if (finalTotal === 21) {
         console.log("Dealer Wins!");
         result.innerHTML = "Blackjack! Dealer Wins!";
@@ -394,10 +408,7 @@ function stand() {
 
         let newCard = deck.pop();
         dealerHand.push(newCard);
-        let dealerCardsHTML = '';
-        for (let i = 0; i < dealerHand.length; i++) {
-            dealerCardsHTML += `<img src="${dealerHand[i][2]}" alt="Card" class="card-image">`;
-        }
+        await displayDealerCards();
         dealerCards.innerHTML = dealerCardsHTML;
         dealerTotal.innerHTML = formatHandTotal(getHandTotal(dealerHand), "Dealer");
     }
